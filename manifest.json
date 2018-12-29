@@ -1,0 +1,29 @@
+{
+    //manifest spec: http://developer.chrome.com/extensions/manifest.html
+    //required
+    "name": "Chrome Extension Template",
+    "version": "1.0",
+    "manifest_version": 2,
+
+    //recommended
+    "description": "Chrome extension description written here.",
+    "icons": {
+        "19": "images/handy_icon.png",
+        "38": "images/handy_icon.png",
+        "128": "images/handy_icon.png"
+    },
+
+    //required
+    "browser_action": {
+        "default_title": "handy!",
+        "default_icon": {
+            "19": "images/handy_icon.png",
+            "38": "images/handy_icon.png"
+        },
+        "default_popup": "html/main.html"
+    },
+
+    //additional
+    "options_page": "html/options.html",
+    "homepage_url": "http://yourdomainhere.com/"
+}

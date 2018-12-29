@@ -1,0 +1,84 @@
+/*
+** file: css/main.css
+** description: custom styling for "html/main.html" file
+*/
+
+div#main-outer {
+    width: 300px;
+    margin: 5px;
+    background: white;
+    border-radius: 5px;
+  
+}
+div.icon {
+    width: 25px;
+    height:25px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    
+  
+}
+
+div.results-amount
+{
+    align-self: center;
+    color:gray;
+    margin-left:14px;
+    font-size: 13px;
+}
+
+div.icon:hover {
+   background: #e8e7e7
+    
+  
+}
+
+input#input-text
+{
+    border:none;
+    box-shadow: none !important;
+    margin-top: 8px;
+    direction: rtl;
+    width: 153px;
+}
+
+div#line
+{
+    border-left: 1px solid #cccaca;
+}
+
+div.icons
+{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    color: gray;
+    align-items: center;
+}
+
+
+
+div#main-inner {
+    padding: 1px;
+    display: flex;
+flex-direction: row;
+}
+
+div#main-title {
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+
+img#main-image {
+    display: block;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div#main-about-text {
+    margin-top: 10px;
+    text-align: center;
+}
