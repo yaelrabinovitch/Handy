@@ -2,7 +2,13 @@
     //manifest spec: http://developer.chrome.com/extensions/manifest.html
     //required
     "name": "Chrome Extension Template",
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "http://*/"
+      ],
     "version": "1.0",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "manifest_version": 2,
 
     //recommended
