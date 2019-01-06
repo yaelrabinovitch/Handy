@@ -14,41 +14,52 @@ function loadCurrentPdf() {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       './pdf.worker.js';
 
-    // Asynchronous download PDF
-    var loadingTask = pdfjsLib.getDocument(url);
+    renderPDF(url);
+  })}
+
+    function renderPDF(url) {
+      pdfjsLib.getDocument(url).then((pdf) => {
+        for (let i = 1; i <= pdf.numPages; i += 1) {
+          const canvas = document.createElement('canvas');
+          /* This indentify the canvas as the location of the page */
+          canvas.id = i;
+          document.body.appendChild(canvas)
+          pdf.getPage(i).then((page) => {
+            renderPage(page, canvas);
+          })
+        }
+      })
+    }
+
+
+
+
+
+    function renderPage(page, canvas) {
+      const viewport = page.getViewport(1.2);
+      const canvasContext = canvas.getContext('2d');
+      canvasContext.strokeRect(5, 5, 25, 15);
+      canvasContext.scale(2, 2);
+      canvasContext.strokeRect(5, 5, 25, 15);
+      const renderContext = {
+        canvasContext,
+        viewport
+      };
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      page.render(renderContext).then(rsult => {
+        download(document.getElementById(canvas.id).toDataURL('image/jpeg'), canvas.id  + "page.gif", "image/jpeg");
+        canvasContext.globalAlpha = 0.2;
+        canvasContext.fillStyle = "yellow"; 
+        canvasContext.fillRect(150, 180, 50, 50); 
+        
+      })
+    }
+
+
+
   
 
-    loadingTask.promise.then(function (pdf) {
-      // write to console number of pages
-      console.log("num of pages: " + pdf._pdfInfo.numPages);
-
-      // Fetch the first page
-      pdf.getPage(1).then(function (page) {
-
-        // Get viewport of the page at required scale
-        var viewport = page.getViewport(2);
-
-        // get canves from html
-        var canvas = $('#pdf-canvas').get(0);
-        var canvas_context = canvas.getContext('2d');
-
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        var renderContext = {
-          canvasContext: canvas_context,
-          viewport: viewport,
-        };
-
-        // Render the page contents in the canvas
-       page.render(renderContext).then(function () {
-          // after done render, dowlnload the image
-          download(document.getElementById('pdf-canvas').toDataURL('image/jpeg'), "firstPageInPdf.gif", "image/jpeg");
-        });
-      });
-    });
-  });
-}
 
 
 
@@ -70,5 +81,5 @@ input.addEventListener("keyup", function (event) {
   if (event.keyCode === 13) {
     $("#input-text").val("kaki")
   }
-});
-
+})
+  
