@@ -1,3 +1,5 @@
+var numOfPages = 1;
+
 
 function getTabUrl() {
   // get tab url from url params
@@ -22,16 +24,11 @@ var pdfUrl = getTabUrl();
 function renderPDF(url) {
 // load pdf from url
   pdfjsLib.getDocument(url).then((pdf) => {
+    numOfPages =  pdf.numPages;
+    pagination();
 
     // go over every page of the pdf
     for (let i = 1; i <= pdf.numPages; i += 1) {
-
-      // append title of the page to body
-      var pageTitleDiv = document.createElement('div')
-      pageTitleDiv.innerHTML = "Page " + i;
-      document.body.appendChild(pageTitleDiv)
-      pageTitleDiv.classList.add("page-title");
-
       // append canvas of the current page to body
       const canvas = document.createElement('canvas');
       canvas.id = i;
@@ -66,7 +63,7 @@ function renderPage(page, canvas) {
   canvas.width = viewport.width;
   page.render(renderContext).then(rsult => {
     // download current page
-    download(document.getElementById(canvas.id).toDataURL('image/jpeg'), canvas.id  + "page.gif", "image/jpeg");
+    // download(document.getElementById(canvas.id).toDataURL('image/jpeg'), canvas.id  + "page.gif", "image/jpeg");
 
     // Draw the marker
     canvasContext.globalAlpha = 0.2;   // define opacity
@@ -77,9 +74,18 @@ function renderPage(page, canvas) {
 }
 
 
+function pagination() {
+  var offset = $(document).scrollTop(); // get current location of the scroll
+  var windowHeight = $(window).height(); // get total window height
+  var pageHeight = windowHeight/numOfPages; // get height of a single page base on number of pages and total height
+  var currentPage =  parseInt(((offset / pageHeight) + 1), 10); // calc current page 
+  var pageNum = document.getElementById("page-title");
+    pageNum.innerHTML =  currentPage + "/" + numOfPages; 
+   
+}
 
 
-
+$(document).on('scroll', pagination);
 
 
 
