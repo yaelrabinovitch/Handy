@@ -3,11 +3,37 @@
 ** description: custom styling for "html/main.html" file
 */
 
+canvas
+{
+    margin-bottom: 5px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 800px;
+}
+
+hr
+{
+    border-top: 1px solid #969494;
+}
+
+.page-title
+{
+    text-align: center;
+    font-weight: 700;
+    font-size: 18px;
+}
+
 div#main-outer {
     width: 300px;
     margin: 5px;
     background: white;
     border-radius: 5px;
+    position: fixed;
+    right: 4px;
+    border: 1px solid #bfbfbf;
   
 }
 div.icon {

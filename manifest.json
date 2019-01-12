@@ -8,6 +8,10 @@
         "http://*/"
       ],
     "version": "1.0",
+    "background": {
+        "scripts": ["js/bacgkround.js"],
+        "persistent": false
+    },
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "manifest_version": 2,
 
@@ -25,8 +29,8 @@
         "default_icon": {
             "19": "images/handy_icon.png",
             "38": "images/handy_icon.png"
-        },
-        "default_popup": "html/main.html"
+        }
+        // "default_popup": "html/main.html"
     },
 
     //additional
