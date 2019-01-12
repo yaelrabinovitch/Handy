@@ -63,7 +63,7 @@ function renderPage(page, canvas) {
   canvas.width = viewport.width;
   page.render(renderContext).then(rsult => {
     // download current page
-    // download(document.getElementById(canvas.id).toDataURL('image/jpeg'), canvas.id  + "page.gif", "image/jpeg");
+    download(document.getElementById(canvas.id).toDataURL('image/jpeg'), canvas.id  + "page.gif", "image/jpeg");
 
     // Draw the marker
     canvasContext.globalAlpha = 0.2;   // define opacity
