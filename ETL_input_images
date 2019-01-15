@@ -1,0 +1,111 @@
+import time
+import os
+import cv2
+import numpy as np
+import glob
+import shutil
+import time
+
+
+
+# SMALL_HEIGHT = 800
+#
+# def resize(img, height=SMALL_HEIGHT, allways=False):
+#     """Resize image to given height."""
+#     if (img.shape[0] > height or allways):
+#         rat = height / img.shape[0]
+#         return cv2.resize(img, (int(rat * img.shape[1]), height))
+#
+#     return img
+
+# def word_normalization(image, height, border=True, tilt=True, border_size=15, hyst_norm=False):
+#     """ Preprocess a word - resize, binarize, tilt world."""
+#     image = resize(image, height, True)
+#
+#     if hyst_norm:
+#         th = _hyst_word_norm(image)
+#     else:
+#         img = cv2.bilateralFilter(image, 10, 30, 30)
+#         gray = 255 - cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+#         norm = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
+#         ret,th = cv2.threshold(norm, 50, 255, cv2.THRESH_TOZERO)
+#
+#     if tilt:
+#         return _word_tilt(th, height, border, border_size)
+#     return th
+#
+# def _word_tilt(img, height, border=True, border_size=15):
+#     """Detect the angle and tilt the image."""
+#     edges = cv2.Canny(img, 50, 150, apertureSize = 3)
+#     lines = cv2.HoughLines(edges, 1, np.pi/180, 30)
+#
+#     if lines is not None:
+#         meanAngle = 0
+#         # Set min number of valid lines (try higher)
+#         numLines = np.sum(1 for l in lines if l[0][1] < 0.7 or l[0][1] > 2.6)
+#         if numLines > 1:
+#             meanAngle = np.mean([l[0][1] for l in lines if l[0][1] < 0.7 or l[0][1] > 2.6])
+#
+#         # Look for angle with correct value
+#         if meanAngle != 0 and (meanAngle < 0.7 or meanAngle > 2.6):
+#             img = _tilt_by_angle(img, meanAngle, height)
+#     return _crop_add_border(img, height, 50, border, border_size)
+#
+# def _crop_add_border(img, height, threshold=50, border=True, border_size=15):
+#     """Crop and add border to word image of letter segmentation."""
+#     # Clear small values
+#     ret, img = cv2.threshold(img, threshold, 255, cv2.THRESH_TOZERO)
+#
+#     x0 = 0
+#     y0 = 0
+#     x1 = img.shape[1]
+#     y1 = img.shape[0]
+#
+#     for i in range(img.shape[0]):
+#         if np.count_nonzero(img[i, :]) > 1:
+#             y0 = i
+#             break
+#     for i in reversed(range(img.shape[0])):
+#         if np.count_nonzero(img[i, :]) > 1:
+#             y1 = i+1
+#             break
+#     for i in range(img.shape[1]):
+#         if np.count_nonzero(img[:, i]) > 1:
+#             x0 = i
+#             break
+#     for i in reversed(range(img.shape[1])):
+#         if np.count_nonzero(img[:, i]) > 1:
+#             x1 = i+1
+#             break
+#
+#     if height != 0:
+#         img = resize(img[y0:y1, x0:x1], height, True)
+#     else:
+#         img = img[y0:y1, x0:x1]
+#
+#     if border:
+#         return cv2.copyMakeBorder(img, 0, 0, border_size, border_size,
+#                                   cv2.BORDER_CONSTANT,
+#                                   value=[0, 0, 0])
+#     return img
+
+
+outputDirectory =  r'C:/Users/YuvalMund/Documents/data/heb_raw'
+inputDirectory =  r'C:\Users\YuvalMund\Documents\data\FinalDataset'
+start_char = "א"
+
+
+for dirname in range(0, 26) :
+    #print (os.path.join(inputDirectory, filename))
+    print(dirname)
+    for filename in os.listdir(os.path.join(inputDirectory, str(dirname))) :
+        #imgSrc = cv2.imread(os.path.join(inputDirectory, filename))
+        #if imgSrc.shape[0] > 20 :
+        # img = word_normalization(imgSrc, height=64)
+        print(filename)
+
+        shutil.copyfile(os.path.join(inputDirectory, str(dirname), filename), outputDirectory + "/" + start_char + "_" + "1_" + str(time.time()) + ".png")
+    start_char = chr((ord(start_char) + 1))
+        #cv2.imwrite(os.path.join(outputDirectory, "N_" + filename), img)
+
+
