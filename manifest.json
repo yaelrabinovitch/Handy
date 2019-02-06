@@ -5,7 +5,8 @@
     "permissions": [
         "tabs",
         "activeTab",
-        "http://*/"
+        "http://*/",
+        "<all_urls>"
       ],
     "version": "1.0",
     "background": {

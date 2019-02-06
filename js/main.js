@@ -12,7 +12,7 @@ function getTabUrl() {
 
 function loadCurrentPdf() {
 
-var pdfUrl = getTabUrl();
+  var pdfUrl = getTabUrl();
 
   // The workerSrc property shall be specified.
   pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -26,28 +26,58 @@ function renderPDF(url) {
   pdfjsLib.getDocument(url).then((pdf) => {
     numOfPages =  pdf.numPages;
     pagination();
-
+ 
     // go over every page of the pdf
     for (let i = 1; i <= pdf.numPages; i += 1) {
-      // append canvas of the current page to body
-      const canvas = document.createElement('canvas');
-      canvas.id = i;
-      document.body.appendChild(canvas)
+      const container = document.createElement('div');
+      container.id = "container_"+i;
+      container.style.position = "relative";
+      document.body.appendChild(container);
+
+      // append cnavas of the current page to body
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.id = "page_"+i;
+      pageCanvas.style.zIndex = 0
+      pageCanvas.style.position = "absolute"
+      container.appendChild(pageCanvas)
+      
+      // append transparent edit canva
+      const editCanvas = document.createElement('canvas');
+      editCanvas.id = "edit_"+i;
+      editCanvas.style.zIndex = 1
+      editCanvas.style.position = "absolute"
+      container.appendChild(editCanvas)
 
       // append hr to body
       var hr = document.createElement('hr');
       document.body.appendChild(hr);
       // render current page
       pdf.getPage(i).then((page) => {
-        renderPage(page, canvas);
+        renderPage(page, pageCanvas).then(rsult => {
+            editCanvas.height = pageCanvas.height;
+            editCanvas.width = pageCanvas.width;
+        });
       })
+
+      markerResults([1]);
     }
   })
 }
 
+function markerResults(results){
+  //results should be an array, each obj should have : 
+  //1) page number; 2)X&Y Coordinates; 3)width; 4)height;
 
+    const canvas1 = document.getElementById("edit_" + 1);
+    const canvasContext1 = canvas1.getContext('2d');
+    canvasContext1.globalAlpha = 0.2;   // define opacity
+    canvasContext1.fillStyle = "yellow"; // define yellow opacity
+    canvasContext1.fillRect(20, 20, 100, 50);
+    canvasContext1.fillRect(100, 100, 100, 50);
 
-
+    canvasContext1.clearRect(20, 20, 100, 50);
+  
+}
 
 function renderPage(page, canvas) {
   const viewport = page.getViewport(1.2);
@@ -61,16 +91,7 @@ function renderPage(page, canvas) {
   };
   canvas.height = viewport.height;
   canvas.width = viewport.width;
-  page.render(renderContext).then(rsult => {
-    // download current page
-    download(document.getElementById(canvas.id).toDataURL('image/jpeg'), canvas.id  + "page.gif", "image/jpeg");
-
-    // Draw the marker
-    canvasContext.globalAlpha = 0.2;   // define opacity
-    canvasContext.fillStyle = "yellow"; // define yellow opacity
-    canvasContext.fillRect(150, 180, 50, 50);  // draw the shape - (The x-coordinate , The y-coordinate, The width in px, The height in px)
-
-  })
+  return page.render(renderContext);
 }
 
 
