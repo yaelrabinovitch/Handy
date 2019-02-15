@@ -40,21 +40,23 @@
                 <div title="סגור" class="icon">
                     <i class="fa fa-times" id="close"></i>
                 </div>
-                <div class="icon">
-                    <i title="הקודם" class="fa fa-angle-up"></i>
+                <div  id="previusResultBtn" class="icon">
+                    <i   title="הקודם" class="fa fa-angle-up"></i>
                 </div>
-                <div class="icon">
-                    <i title="הבא" class="fa fa-angle-down"></i>
+                <div id="nextResultBtn" class="icon">
+                    <i  title="הבא" class="fa fa-angle-down"></i>
                 </div>
                 <div>
                 </div>
+                
             </div>
            
             <div id="line"></div>
-            <div class="results-amount">
-                    5/7
-                </div>
-            <input type="text" placeholder="חפש" id="input-text" name="url" size="50" value="" />
+            <div style="visibility:hidden" id="results-amount-container" class="results-amount">
+                    <span id="currentResult"></span>/ 
+                     <span id="totalResultsNumber"></span>
+                 </div>
+            <input  type="text" placeholder="חפש" id="input-text" name="url" size="50" value="" />
         </div>
     </div>
 </div>

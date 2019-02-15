@@ -2,6 +2,7 @@
     //manifest spec: http://developer.chrome.com/extensions/manifest.html
     //required
     "name": "Chrome Extension Template",
+    "csp": "script-src 'self' 'unsafe-inline'; object-src 'self'",
     "permissions": [
         "tabs",
         "activeTab",
