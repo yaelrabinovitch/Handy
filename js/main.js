@@ -55,13 +55,26 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(i).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
-          // editCanvas.height = pageCanvas.height;
-          // editCanvas.width = pageCanvas.width;
+          var url = document.getElementById('page_1').toDataURL('image/jpeg')
+
+            $.ajax({
+              type: 'GET',
+              url: 'http://127.0.0.1:5000/',
+              data: 'file=' + url,
+              enctype: 'multipart/form-data',
+              processData: false,  // Important!
+              contentType: 'application/json;charset=UTF-8',
+              cache: false,
+              success: function(msg){
+                  console.log('Done')
+              }
+          });
 
         });
-      })}})}
-
-
+      })
+    }
+  })
+}
 
 function markerResults() {
   //results should be an array, each obj should have : 
@@ -87,10 +100,10 @@ function markerResults() {
     const canvasContext1 = canvas1.getContext('2d');
 
     // define opacity
-    canvasContext1.globalAlpha = 0.2;   
+    canvasContext1.globalAlpha = 0.2;
 
     // define yellow opacity
-    canvasContext1.fillStyle = "yellow"; 
+    canvasContext1.fillStyle = "yellow";
 
     // marker thr result
     canvasContext1.fillRect(result.coordinates.x, result.coordinates.y, result.width, result.height);
@@ -109,7 +122,7 @@ function renderPage(page, canvas) {
   };
   canvas.height = viewport.height;
   canvas.width = viewport.width;
-  return page.render(renderContext);
+  return page.render(renderContext)
 }
 
 
