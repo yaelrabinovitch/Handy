@@ -85,17 +85,23 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(i).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
+          download(document.getElementById(pageCanvas.id).toDataURL('image/png'),  pageCanvas.id+ ".png", "image/png");
           var url = document.getElementById('page_1').toDataURL('image/png')
+
             $.ajax({
               type: 'GET',
               url: 'http://127.0.0.1:5000/',
-              data: 'file=' + url,
+              data: 'file=' + pageCanvas.id + ".png",
               enctype: 'multipart/form-data',
               processData: false,  // Important!
               contentType: 'application/json;charset=UTF-8',
               cache: false,
               success: function(msg){
                   console.log('Done')
+              },
+              error: function(e){
+                console.log(e);
+                debugger;
               }
           });
 
