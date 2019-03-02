@@ -1,13 +1,19 @@
 var numOfPages = 1;
-var results = [];
 var currResultIndex = 0;
 
-function localRenderPdf(url)
-{
+// temporary
+var results = []
+var msg = '{"text": ["גגגאגגב", "גגג", "גגג", "גגגג", "גגגג", "גג", "בא", "גג", "ג", "ג", "ב", "בגג", "גגג", "בבג", "גגג", "גג", "ג", "גגג", "בג", "בבב", "בג", "גבב", "בג", "גבגג", "גג", "בג", "בג", "בג"], "locations": [[399, 108, 689, 218], [308, 104, 346, 121], [224, 102, 283, 121], [157, 99, 209, 118], [74, 99, 142, 117], [508, 149, 530, 164], [430, 148, 467, 164], [367, 146, 418, 188], [297, 147, 330, 190], [242, 144, 271, 184], [173, 142, 225, 186], [100, 139, 165, 182], [470, 170, 500, 187], [590, 201, 620, 218], [656, 264, 688, 283], [599, 271, 629, 289], [543, 269, 563, 285], [474, 269, 520, 289], [408, 273, 444, 289], [340, 274, 378, 290], [284, 271, 314, 290], [214, 274, 258, 291], [150, 271, 190, 290], [627, 299, 688, 318], [585, 303, 608, 318], [527, 301, 549, 319], [487, 303, 509, 317], [442, 303, 465, 319]]}'
+var msgO = JSON.parse(msg);
+var text = msgO.text;
+var locations = msgO.locations;
+var textObj = text.map(function (word, index) { return { word, location: locations[index], pageNum: 1 } });
+
+function localRenderPdf(url) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'blob';
-  
+
   xhr.onload = function (e) {
     // get binary data as a response
     var blob = this.response;
@@ -19,7 +25,7 @@ function localRenderPdf(url)
     };
     fileReader.readAsArrayBuffer(blob);
   };
-  
+
   xhr.send();
 }
 
@@ -85,24 +91,25 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(i).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
-          download(document.getElementById(pageCanvas.id).toDataURL('image/png'),  pageCanvas.id+ ".png", "image/png");
+          editCanvas.height = pageCanvas.height;
+          editCanvas.width = pageCanvas.width;
+          download(document.getElementById(pageCanvas.id).toDataURL('image/png'), pageCanvas.id + ".png", "image/png");
           var url = document.getElementById('page_1').toDataURL('image/png')
 
-            $.ajax({
-              type: 'GET',
-              url: 'http://127.0.0.1:5000/',
-              data: 'file=' + pageCanvas.id + ".png",
-              enctype: 'multipart/form-data',
-              processData: false,  // Important!
-              contentType: 'application/json;charset=UTF-8',
-              cache: false,
-              success: function(msg){
-                  console.log('Done')
-              },
-              error: function(e){
-                console.log(e);
-                debugger;
-              }
+          $.ajax({
+            type: 'GET',
+            url: 'http://127.0.0.1:5000/',
+            data: 'file=' + pageCanvas.id + ".png",
+            enctype: 'multipart/form-data',
+            processData: false,  // Important!
+            contentType: 'application/json;charset=UTF-8',
+            cache: false,
+            success: function (msg) {
+              console.log('Done')
+            },
+            error: function (e) {
+              console.log(e);
+            }
           });
 
         });
@@ -116,7 +123,7 @@ function _base64ToArrayBuffer(base64) {
   var len = binary_string.length;
   var bytes = new Uint8Array(len);
   for (var i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
+    bytes[i] = binary_string.charCodeAt(i);
   }
   return bytes;
 }
@@ -141,7 +148,7 @@ function markerResults() {
     let result = results[i];
 
     // get edit canvas of the result
-    const canvas1 = document.getElementById("edit_" + result.pageNumber);
+    const canvas1 = document.getElementById("edit_" + result.pageNum);
     const canvasContext1 = canvas1.getContext('2d');
 
     // define opacity
@@ -151,8 +158,19 @@ function markerResults() {
     canvasContext1.fillStyle = "yellow";
 
     // marker thr result
-    canvasContext1.fillRect(result.coordinates.x, result.coordinates.y, result.width, result.height);
+    let location = calcLocation(result);
+    canvasContext1.fillRect(location.x1, location.y1, location.width, location.height);
   }
+}
+
+function calcLocation(text) {
+  var x1 = text.location[0],
+    y1 = text.location[1],
+    x2 = text.location[2],
+    y2 = text.location[3],
+    width = Math.abs(x2 - x1),
+    height = Math.abs(y2 - y1);
+  return { x1, y1, width, height };
 }
 
 function renderPage(page, canvas) {
@@ -192,11 +210,13 @@ function clearResults() {
 
     // current result
     let result = results[i];
-    const canvas1 = document.getElementById("edit_" + result.pageNumber);
+    const canvas1 = document.getElementById("edit_" + result.pageNum);
     const canvasContext1 = canvas1.getContext('2d');
     canvasContext1.globalAlpha = 0.2;   // define opacity
     canvasContext1.fillStyle = "yellow"; // define yellow opacity
-    canvasContext1.clearRect(result.coordinates.x, result.coordinates.y, result.width, result.height);
+
+    let location = calcLocation(result);
+    canvasContext1.clearRect(location.x1, location.y1, location.width, location.height);
   }
 }
 
@@ -223,20 +243,23 @@ function nextResult() {
 }
 
 function scrollToCurrentResults() {
-  var currResultEditCanvas = document.getElementById("edit_" + results[currResultIndex].pageNumber);
-  currResultEditCanvas.scrollIntoView();
+  if (results[currResultIndex]) {
+    var currResultEditCanvas = document.getElementById("edit_" + results[currResultIndex].pageNum);
+    currResultEditCanvas.scrollIntoView();
+  }
 }
 
 function onChangeInputText() {
   clearResults();
-  results = [{ pageNumber: 2, coordinates: { x: 75, y: 20 }, width: 100, height: 50 },
-  { pageNumber: 4, coordinates: { x: 20, y: 100 }, width: 45, height: 20 }]
-  markerResults();
   var inputText = document.getElementById("input-text").value;
-  if (!inputText || inputText == "") {
+
+  debugger;
+  if (!inputText || inputText === "") {
     document.getElementById("results-amount-container").style.visibility = "hidden";
   }
   else {
+    results = textObj.filter(function (wordObj) { return wordObj.word.includes(inputText) });
+    markerResults();
     document.getElementById("results-amount-container").style.visibility = "visible";
   }
   scrollToCurrentResults();
