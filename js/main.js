@@ -55,16 +55,8 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(i).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
-         // var url = document.getElementById('page_1').toDataURL('image/jpeg');
-
-          //Hardcode
-          var c = document.getElementById("myCanvas");
-          var ctx = c.getContext("2d");
-          var img = document.getElementById("myImage");
-          ctx.drawImage(img, 10,10);
-          var url =c.toDataURL('image/jpeg')
-          //Hardcode
-
+          var url = document.getElementById('page_1').toDataURL('image/jpeg')
+          debugger;;
             $.ajax({
               type: 'GET',
               url: 'http://127.0.0.1:5000/',
