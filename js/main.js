@@ -2,6 +2,29 @@ var numOfPages = 1;
 var results = [];
 var currResultIndex = 0;
 
+function localRenderPdf(url)
+{
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'blob';
+  
+  xhr.onload = function (e) {
+    // get binary data as a response
+    var blob = this.response;
+    var fileReader = new FileReader();
+    fileReader.onload = function (event) {
+      arrayBuffer = event.target.result;
+      var typedarray = new Uint8Array(this.result);
+      renderPDF(typedarray);
+    };
+    fileReader.readAsArrayBuffer(blob);
+  };
+  
+  xhr.send();
+}
+
+
+
 function getTabUrl() {
   // get tab url from url params
   var url_string = window.location.href
@@ -10,15 +33,22 @@ function getTabUrl() {
   return url;
 }
 
-function loadCurrentPdf() {
 
+
+function loadCurrentPdf() {
   var pdfUrl = getTabUrl();
 
   // The workerSrc property shall be specified.
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     './pdf.worker.js';
+  if (pdfUrl.startsWith("file:///")) {
+    var splitted = pdfUrl.split("file:///");
+    localRenderPdf(splitted[1]);
+  }
+  else {
 
-  renderPDF(pdfUrl);
+    renderPDF(pdfUrl);
+  }
 }
 
 function renderPDF(url) {
@@ -55,8 +85,7 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(i).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
-          var url = document.getElementById('page_1').toDataURL('image/jpeg')
-          debugger;;
+          var url = document.getElementById('page_1').toDataURL('image/png')
             $.ajax({
               type: 'GET',
               url: 'http://127.0.0.1:5000/',
@@ -74,6 +103,16 @@ function renderPDF(url) {
       })
     }
   })
+}
+
+function _base64ToArrayBuffer(base64) {
+  var binary_string = window.atob(base64);
+  var len = binary_string.length;
+  var bytes = new Uint8Array(len);
+  for (var i = 0; i < len; i++) {
+      bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes;
 }
 
 function markerResults() {
