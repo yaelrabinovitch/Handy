@@ -8,5 +8,4 @@ chrome.browserAction.onClicked.addListener(function() {
         var url = tab.url;
         chrome.tabs.create({ url: chrome.extension.getURL('html/main.html' +  "?tabUrl=" + url ), selected: true });
       })
-    
   });

@@ -2,67 +2,75 @@
 <html>
 
 <head>
-    <!-- load stylesheets: Bootstrap v2.3.0 - http://twitter.github.com/bootstrap/index.html -->
+
+    <script type="text/javascript" src="../libs/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="../libs/bootstrap.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
     </link>
-
-    <!-- load javascript: jQuery 1.9.1 - http://jquery.com/ -->
-    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
-
-    <!-- load javascript: Bootstrap v2.3.0 - http://twitter.github.com/bootstrap/ -->
-    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <!-- load stylesheets: internal -->
     <link rel="stylesheet" type="text/css" href="../css/global.css">
     </link>
     <link rel="stylesheet" type="text/css" href="../css/main.css">
     </link>
-    <link href="../fontawesome-free-5.6.3-web/css/all.css" rel="stylesheet">
-    
-    <!--load all styles -->
-    <script src="../js/pdf.js"></script>
-    <script src="../js/pdf.worker.js"></script>
-    <script src="../js/download.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/toastr.min.css">
+    </link>
+    <link href="../libs/fontawesome-free-5.6.3-web/css/all.css" rel="stylesheet">
+    </link>
+    <link rel="stylesheet" type="text/css" href="../css/loading.css">
+    </link>
+
+    <script src="../libs/pdf.js"></script>
+    <script src="../libs/pdf.worker.js"></script>
+    <script src="../libs/download.js"></script>
+    <script src="../libs/toastr.js"></script>
 
 
 </head>
 
 <body>
-    <!-- <img id="myImage" src="../WhatsApp Image 2019-02-20 at 14.16.58.jpeg">
-    <canvas id ="myCanvas"></canvas> -->
-    <div id="header" >
-        <div id="page-title">
-            1
-        </div>
-   
-    <div id="main-outer">
-        <div id="main-inner">
-         
-            <div class="icons">
-                <div title="סגור" class="icon">
-                    <i class="fa fa-times" id="close"></i>
-                </div>
-                <div  id="previusResultBtn" class="icon">
-                    <i   title="הקודם" class="fa fa-angle-up"></i>
-                </div>
-                <div id="nextResultBtn" class="icon">
-                    <i  title="הבא" class="fa fa-angle-down"></i>
-                </div>
-                <div>
-                </div>
-                
-            </div>
-           
-            <div id="line"></div>
-            <div style="visibility:hidden" id="results-amount-container" class="results-amount">
-                    <span id="currentResult"></span>/ 
-                     <span id="totalResultsNumber"></span>
-                 </div>
-            <input  type="text" placeholder="חפש" id="input-text" name="url" size="50" />
+    <div id="loading-container" class="loading-container">
+        <div class="loader"></div>
+        <div class="loading-title">
+            המערכת מעבדת את הקובץ,
+            אנא המתן...
         </div>
     </div>
-</div>
+    <div id="pdf-container">
+        <div id="header">
+            <div id="page-title">
+                1
+            </div>
+
+            <div id="main-outer">
+                <div id="main-inner">
+
+                    <div class="icons">
+                        <div title="סגור" class="icon">
+                            <i class="fa fa-times" id="close"></i>
+                        </div>
+                        <div id="previusResultBtn" class="icon">
+                            <i title="הקודם" class="fa fa-angle-up"></i>
+                        </div>
+                        <div id="nextResultBtn" class="icon">
+                            <i title="הבא" class="fa fa-angle-down"></i>
+                        </div>
+                        <div>
+                        </div>
+
+                    </div>
+
+                    <div id="line"></div>
+                    <div style="visibility:hidden" id="results-amount-container" class="results-amount">
+                        <span id="currentResult"></span>/
+                        <span id="totalResultsNumber"></span>
+                    </div>
+                    <input type="text" placeholder="חפש" id="input-text" name="url" size="50" />
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript" src="../js/main.js"></script>
-    <!-- load javascript: unique html page javascript file -->
+    <script type="text/javascript" src="../js/service.js"></script>
 </body>
 
 </html>
