@@ -249,7 +249,7 @@ function markerResults() {
     let result = results[i];
 
     // get edit canvas of the result
-    const canvas1 = document.getElementById("edit_" + result[0].pageNum);
+    const canvas1 = document.getElementById("edit_" + result[0][0].pageNum);
     const canvasContext1 = canvas1.getContext('2d');
 
     // define opacity
@@ -259,10 +259,12 @@ function markerResults() {
     canvasContext1.fillStyle = "yellow";
 
     // marker thr result
-    if(result.length === 1){
-        canvasContext1.fillRect(result[0].location[0], result[0].location[1], result[0].location[2], result[0].location[3]);
+    if(result.length === 1 && result[0].length === 1){
+        canvasContext1.fillRect(result[0][0].location[0], result[0][0].location[1], result[0][0].location[2], result[0][0].location[3]);
     } else{
-        canvasContext1.fillRect(result[1].location[0], result[1].location[1], parseInt(result[0].location[2]) + parseInt(result[0].location[0]) - parseInt(result[1].location[0]), result[0].location[3]);
+      result.forEach(row => {
+        canvasContext1.fillRect(row[1].location[0], row[1].location[1], parseInt(row[0].location[2]) + parseInt(row[0].location[0]) - parseInt(row[1].location[0]), row[0].location[3]);
+      });
     }
   }
 }
@@ -286,17 +288,19 @@ function clearResults() {
 
     // current result
     let result = results[i];
-    const canvas1 = document.getElementById("edit_" + result[0].pageNum);
+    const canvas1 = document.getElementById("edit_" + result[0][0].pageNum);
     const canvasContext1 = canvas1.getContext('2d');
     canvasContext1.globalAlpha = 0.2;   // define opacity
     canvasContext1.fillStyle = "yellow"; // define yellow opacity
 
 
       // clean markers
-      if(result.length === 1){
-        canvasContext1.clearRect(result[0].location[0], result[0].location[1], result[0].location[2], result[0].location[3]);
+      if(result.length === 1 && result[0].length === 1){
+        canvasContext1.clearRect(result[0][0].location[0], result[0][0].location[1], result[0][0].location[2], result[0][0].location[3]);
     } else{
-        canvasContext1.clearRect(result[1].location[0], result[1].location[1], parseInt(result[0].location[2]) + parseInt(result[0].location[0]) - parseInt(result[1].location[0]), result[0].location[3]);
+      result.forEach(row => {
+        canvasContext1.clearRect(row[1].location[0], row[1].location[1], parseInt(row[0].location[2]) + parseInt(row[0].location[0]) - parseInt(row[1].location[0]), row[0].location[3]);
+      });
     }
   }
 }
@@ -324,8 +328,8 @@ function nextResult() {
 }
 
 function scrollToCurrentResults(currResultIndex) {
-  if (results[0][currResultIndex]) {
-    var currResultEditCanvas = document.getElementById("edit_" + results[0][currResultIndex].pageNum);
+  if (results.length && results[0][0][currResultIndex]) {
+    var currResultEditCanvas = document.getElementById("edit_" + results[0][0][currResultIndex].pageNum);
     currResultEditCanvas.scrollIntoView();
   }
 }
@@ -343,15 +347,10 @@ function onChangeInputText() {
 
       textObj.letters.forEach(letter => {
         if (indices.includes(letter.index)) {
-          if(inputText.length === 1) {
-            results.push([textObj.letters[letter.index]]);
-          } else{
-            results.push([textObj.letters[letter.index], textObj.letters[letter.index + inputText.length - 1]]);
-          }
+            results.push(arrangeResultToRows(letter.index, inputText, textObj));
         }
       });
     });
-
 
     markerResults();
     document.getElementById("results-amount-container").style.visibility = "visible";
@@ -359,6 +358,31 @@ function onChangeInputText() {
   }
 
   scrollToCurrentResults(currResultIndex);
+}
+
+function arrangeResultToRows(index, inputText, textObj){
+  if(inputText.length === 1) {
+    return [[textObj.letters[index]]];
+  } else{
+    let arr = [];
+    let charsArr = [...inputText];
+    let rows = {}
+
+    for(let i = index; i < charsArr.length + index; i++) {
+      const y = parseInt(textObj.letters[i].location[1]);
+      if(y > 0){
+        if (!rows[y]) rows[y] = []
+        rows[y].push(i);
+      }
+    }
+
+    Object.keys(rows).forEach(y => {
+      let first = rows[y][0],
+          last = rows[y][rows[y].length - 1];
+      arr.push([textObj.letters[first], textObj.letters[last]]);
+    });
+    return arr;
+  }
 }
 
 
