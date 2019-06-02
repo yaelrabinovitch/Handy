@@ -194,7 +194,6 @@ function renderPDF(url) {
 
 function onFinishGetAllData()
 {
-  debugger;
   document.getElementById("pdf-container").style.display = "block";
   document.getElementById("loading-container").style.display = "none";
 }
@@ -250,7 +249,7 @@ function markerResults() {
     let result = results[i];
 
     // get edit canvas of the result
-    const canvas1 = document.getElementById("edit_" + result.pageNum);
+    const canvas1 = document.getElementById("edit_" + result[0].pageNum);
     const canvasContext1 = canvas1.getContext('2d');
 
     // define opacity
@@ -260,7 +259,11 @@ function markerResults() {
     canvasContext1.fillStyle = "yellow";
 
     // marker thr result
-    canvasContext1.fillRect(result.location[0], result.location[1], result.location[2], result.location[3]);
+    if(result.length === 1){
+        canvasContext1.fillRect(result[0].location[0], result[0].location[1], result[0].location[2], result[0].location[3]);
+    } else{
+        canvasContext1.fillRect(result[1].location[0], result[1].location[1], parseInt(result[0].location[2]) + parseInt(result[0].location[0]) - parseInt(result[1].location[0]), result[0].location[3]);
+    }
   }
 }
 
@@ -283,12 +286,18 @@ function clearResults() {
 
     // current result
     let result = results[i];
-    const canvas1 = document.getElementById("edit_" + result.pageNum);
+    const canvas1 = document.getElementById("edit_" + result[0].pageNum);
     const canvasContext1 = canvas1.getContext('2d');
     canvasContext1.globalAlpha = 0.2;   // define opacity
     canvasContext1.fillStyle = "yellow"; // define yellow opacity
 
-    canvasContext1.clearRect(result.location[0], result.location[1], result.location[2], result.location[3]);
+
+      // clean markers
+      if(result.length === 1){
+        canvasContext1.clearRect(result[0].location[0], result[0].location[1], result[0].location[2], result[0].location[3]);
+    } else{
+        canvasContext1.clearRect(result[1].location[0], result[1].location[1], parseInt(result[0].location[2]) + parseInt(result[0].location[0]) - parseInt(result[1].location[0]), result[0].location[3]);
+    }
   }
 }
 
@@ -315,8 +324,8 @@ function nextResult() {
 }
 
 function scrollToCurrentResults(currResultIndex) {
-  if (results[currResultIndex]) {
-    var currResultEditCanvas = document.getElementById("edit_" + results[currResultIndex].pageNum);
+  if (results[0][currResultIndex]) {
+    var currResultEditCanvas = document.getElementById("edit_" + results[0][currResultIndex].pageNum);
     currResultEditCanvas.scrollIntoView();
   }
 }
@@ -334,14 +343,13 @@ function onChangeInputText() {
 
       textObj.letters.forEach(letter => {
         if (indices.includes(letter.index)) {
-          let letterIndex = letter.index;
-          for (let i = 0; i < inputText.length; i++) {
-            results.push(textObj.letters[i + letterIndex]);
+          if(inputText.length === 1) {
+            results.push([textObj.letters[letter.index]]);
+          } else{
+            results.push([textObj.letters[letter.index], textObj.letters[letter.index + inputText.length - 1]]);
           }
         }
       });
-
-
     });
 
 
