@@ -133,3 +133,23 @@ div#main-about-text {
     margin-top: 10px;
     text-align: center;
 }
+
+#reTryLoadBtn
+{
+    width: 128px;
+    font-size: 20px;
+}
+
+#error-container
+{
+    text-align: center;
+}
+
+.error-text
+{
+    direction: rtl; 
+    color:red; 
+    margin-top:15px;   
+    line-height: 2rem;
+}
+
