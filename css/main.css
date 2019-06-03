@@ -77,6 +77,8 @@ div.results-amount
     font-size: 13px;
     display: flex;
     flex-direction: row;
+    max-width: 30px;
+    min-width: 30px;
 }
 
 div.icon:hover {
