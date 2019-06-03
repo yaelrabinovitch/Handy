@@ -3,6 +3,7 @@ var numOfPages = 1;
 var currResultIndex = 0;
 var results = []
 var textObjects = [];
+var isError = false;
 
 
 //EVENTS
@@ -18,13 +19,14 @@ document.addEventListener('DOMContentLoaded', init_main);
 //INIT
 function init_main() {
   document.getElementById("pdf-container").style.display = "none";
+  document.getElementById("error-container").style.display = "none";
   document.getElementById("previusResultBtn").addEventListener("click", previusResult);
   document.getElementById("nextResultBtn").addEventListener("click", nextResult);
   document.getElementById("input-text").addEventListener("input", onChangeInputText);
+  document.getElementById("reTryLoadBtn").addEventListener("click", reTryLoad);
   $('html').hide().fadeIn('slow');
 
   loadCurrentPdf();
-  pagination();
 }
 
 function getTabUrl() {
@@ -61,7 +63,7 @@ function pagination() {
 }
 
 function ajax(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     $.ajax(options).done(resolve).fail(reject);
   });
 }
@@ -124,13 +126,11 @@ function renderPDF(url) {
         renderPage(page, pageCanvas).then(rsult => {
           editCanvas.height = pageCanvas.height;
           editCanvas.width = pageCanvas.width;
-
           var dataUrl = document.getElementById('page_' + pageNum).toDataURL('image/png')
-
           var serverUrl = 'http://193.106.55.32:5000/'
           $.ajax({
             type: 'POST',
-            beforeSend: function(xhr) {
+            beforeSend: function (xhr) {
               activeAjaxConnections++;
             },
             url: serverUrl,
@@ -171,12 +171,13 @@ function renderPDF(url) {
 
               // Add to text objects the current page letters and text
               textObjects.push({ text: text, letters: letters, pageNum: pageNum });
-              
+
             },
             error: function (e) {
+              isError = true;
               activeAjaxConnections--;
               if (0 == activeAjaxConnections) {
-              onFinishGetAllData();
+                onFinishGetAllData();
                 // this was the last Ajax connection, do the thing
               }
               console.log(e);
@@ -190,10 +191,19 @@ function renderPDF(url) {
   })
 }
 
-function onFinishGetAllData()
-{
-  document.getElementById("pdf-container").style.display = "block";
-  document.getElementById("loading-container").style.display = "none";
+function onFinishGetAllData() {
+  if (!isError) {
+    document.getElementById("pdf-container").style.display = "block";
+    document.getElementById("loading-container").style.display = "none";
+    pagination();
+  }
+  else {
+    document.getElementById("error-container").style.display = "block";
+    document.getElementById("pdf-container").style.display = "none";
+    document.getElementById("loading-container").style.display = "none";
+  }
+
+
 }
 
 function renderPage(page, canvas) {
@@ -312,7 +322,7 @@ function scrollToCurrentResults(currResultIndex, previusResult) {
     clearMarker(previusCanvasContext, results[previusResult])
     if(previusResult != currResultIndex) drawMarker(previusCanvasContext, results[previusResult], "yellow", 0.4);
     clearMarker(currCanvasContext, results[currResultIndex])
-    drawMarker(currCanvasContext, results[currResultIndex], "red", 0.3);
+    drawMarker(currCanvasContext, results[currResultIndex], "orange", 0.4);
     currResultEditCanvas.scrollIntoView();
   }
 }
@@ -330,7 +340,7 @@ function onChangeInputText() {
 
       textObj.letters.forEach(letter => {
         if (indices.includes(letter.index)) {
-            results.push(arrangeResultToRows(letter.index, inputText, textObj));
+          results.push(arrangeResultToRows(letter.index, inputText, textObj));
         }
       });
     });
@@ -342,17 +352,17 @@ function onChangeInputText() {
   }
 }
 
-function arrangeResultToRows(index, inputText, textObj){
-  if(inputText.length === 1) {
+function arrangeResultToRows(index, inputText, textObj) {
+  if (inputText.length === 1) {
     return [[textObj.letters[index]]];
-  } else{
+  } else {
     let arr = [];
     let charsArr = [...inputText];
     let rows = {}
 
-    for(let i = index; i < charsArr.length + index; i++) {
+    for (let i = index; i < charsArr.length + index; i++) {
       const y = parseInt(textObj.letters[i].location[1]);
-      if(y > 0){
+      if (y > 0) {
         if (!rows[y]) rows[y] = []
         rows[y].push(i);
       }
@@ -360,7 +370,7 @@ function arrangeResultToRows(index, inputText, textObj){
 
     Object.keys(rows).forEach(y => {
       let first = rows[y][0],
-          last = rows[y][rows[y].length - 1];
+        last = rows[y][rows[y].length - 1];
       arr.push([textObj.letters[first], textObj.letters[last]]);
     });
     return arr;
@@ -382,4 +392,8 @@ function getIndicesOf(searchStr, str, caseSensitive) {
     startIndex = index + searchStrLen;
   }
   return indices;
+}
+
+function reTryLoad() {
+  window.location.reload()
 }
