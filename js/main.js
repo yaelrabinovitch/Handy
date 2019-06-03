@@ -69,7 +69,6 @@ function ajax(options) {
 //RENDERING
 function localRenderPdf(url) {
 
-
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'blob';
@@ -189,7 +188,6 @@ function renderPDF(url) {
       })
     }
   })
-  
 }
 
 function onFinishGetAllData()
@@ -197,7 +195,6 @@ function onFinishGetAllData()
   document.getElementById("pdf-container").style.display = "block";
   document.getElementById("loading-container").style.display = "none";
 }
-
 
 function renderPage(page, canvas) {
   const viewport = page.getViewport(1.2);
@@ -213,17 +210,6 @@ function renderPage(page, canvas) {
   canvas.width = viewport.width;
   return page.render(renderContext)
 }
-
-// function _base64ToArrayBuffer(base64) {
-//   var binary_string = window.atob(base64);
-//   var len = binary_string.length;
-//   var bytes = new Uint8Array(len);
-//   for (var i = 0; i < len; i++) {
-//     bytes[i] = binary_string.charCodeAt(i);
-//   }
-//   return bytes;
-// }
-
 
 function markerResults() {
   //results should be an array, each obj should have : 
@@ -250,38 +236,36 @@ function markerResults() {
 
     // get edit canvas of the result
     const canvas1 = document.getElementById("edit_" + result[0][0].pageNum);
-    const canvasContext1 = canvas1.getContext('2d');
+    const canvasContext = canvas1.getContext('2d');
 
-    // define opacity
-    canvasContext1.globalAlpha = 0.2;
-
-    // define yellow opacity
-    canvasContext1.fillStyle = "yellow";
-
-    // marker thr result
-    if(result.length === 1 && result[0].length === 1){
-        canvasContext1.fillRect(result[0][0].location[0], result[0][0].location[1], result[0][0].location[2], result[0][0].location[3]);
-    } else{
-      result.forEach(row => {
-        canvasContext1.fillRect(row[1].location[0], row[1].location[1], parseInt(row[0].location[2]) + parseInt(row[0].location[0]) - parseInt(row[1].location[0]), row[0].location[3]);
-      });
-    }
+    drawMarker(canvasContext, result, "yellow", 0.4)
   }
 }
 
-// function calcLocation(text) {
-//   var x1 = text.location[0],
-//     y1 = text.location[1],
-//     x2 = text.location[2],
-//     y2 = text.location[3],
-//     width = Math.abs(x2 - x1),
-//     height = Math.abs(y2 - y1);
-//   return { x1, y1, width, height };
-// }
+function drawMarker(context, result, color, opacity){
+  context.globalAlpha = opacity;
+  context.fillStyle = color;
+
+  if(result.length === 1 && result[0].length === 1){
+    context.fillRect(result[0][0].location[0], result[0][0].location[1], result[0][0].location[2], result[0][0].location[3]);
+  } else{
+    result.forEach(row => {
+      context.fillRect(row[1].location[0], row[1].location[1], parseInt(row[0].location[2]) + parseInt(row[0].location[0]) - parseInt(row[1].location[0]), row[0].location[3]);
+    });
+  }
+}
+
+function clearMarker(context, result){
+  if(result.length === 1 && result[0].length === 1){
+    context.clearRect(result[0][0].location[0], result[0][0].location[1], result[0][0].location[2], result[0][0].location[3]);
+  } else{
+    result.forEach(row => {
+      context.clearRect(row[1].location[0], row[1].location[1], parseInt(row[0].location[2]) + parseInt(row[0].location[0]) - parseInt(row[1].location[0]), row[0].location[3]);
+    });
+  }
+}
 
 function clearResults() {
-  //results should be an array, each obj should have : 
-  //1) page number; 2)X&Y Coordinates; 3)width; 4)height;
 
   // go over all results
   for (var i = 0; i < results.length; i++) {
@@ -289,19 +273,9 @@ function clearResults() {
     // current result
     let result = results[i];
     const canvas1 = document.getElementById("edit_" + result[0][0].pageNum);
-    const canvasContext1 = canvas1.getContext('2d');
-    canvasContext1.globalAlpha = 0.2;   // define opacity
-    canvasContext1.fillStyle = "yellow"; // define yellow opacity
+    const canvasContext = canvas1.getContext('2d');
 
-
-      // clean markers
-      if(result.length === 1 && result[0].length === 1){
-        canvasContext1.clearRect(result[0][0].location[0], result[0][0].location[1], result[0][0].location[2], result[0][0].location[3]);
-    } else{
-      result.forEach(row => {
-        canvasContext1.clearRect(row[1].location[0], row[1].location[1], parseInt(row[0].location[2]) + parseInt(row[0].location[0]) - parseInt(row[1].location[0]), row[0].location[3]);
-      });
-    }
+    clearMarker(canvasContext, result);
   }
 }
 
@@ -312,7 +286,7 @@ function previusResult() {
       document.getElementById("nextResultBtn").disabled = true;
     }
     document.getElementById("currentResult").innerHTML = currResultIndex + 1;
-    scrollToCurrentResults(currResultIndex);
+    scrollToCurrentResults(currResultIndex, currResultIndex + 1);
   }
 }
 
@@ -323,13 +297,22 @@ function nextResult() {
       document.getElementById("nextResultBtn").disabled = true;
     }
     document.getElementById("currentResult").innerHTML = currResultIndex + 1;
-    scrollToCurrentResults(currResultIndex);
+    scrollToCurrentResults(currResultIndex, currResultIndex - 1);
   }
 }
 
-function scrollToCurrentResults(currResultIndex) {
+function scrollToCurrentResults(currResultIndex, previusResult) {
   if (results.length && results[currResultIndex][0][0]) {
-    var currResultEditCanvas = document.getElementById("edit_" + results[currResultIndex][0][0].pageNum);
+    let currResultEditCanvas = document.getElementById("edit_" + results[currResultIndex][0][0].pageNum);
+    const currCanvasContext = currResultEditCanvas.getContext('2d');
+
+    let previusResultEditCanvas = document.getElementById("edit_" + results[previusResult][0][0].pageNum);
+    const previusCanvasContext = previusResultEditCanvas.getContext('2d');
+
+    clearMarker(previusCanvasContext, results[previusResult])
+    if(previusResult != currResultIndex) drawMarker(previusCanvasContext, results[previusResult], "yellow", 0.4);
+    clearMarker(currCanvasContext, results[currResultIndex])
+    drawMarker(currCanvasContext, results[currResultIndex], "red", 0.3);
     currResultEditCanvas.scrollIntoView();
   }
 }
@@ -354,10 +337,9 @@ function onChangeInputText() {
 
     markerResults();
     document.getElementById("results-amount-container").style.visibility = "visible";
-
+ 
+    scrollToCurrentResults(currResultIndex, currResultIndex);
   }
-
-  scrollToCurrentResults(currResultIndex);
 }
 
 function arrangeResultToRows(index, inputText, textObj){
@@ -385,7 +367,6 @@ function arrangeResultToRows(index, inputText, textObj){
   }
 }
 
-
 function getIndicesOf(searchStr, str, caseSensitive) {
   var searchStrLen = searchStr.length;
   if (searchStrLen == 0) {
@@ -402,9 +383,3 @@ function getIndicesOf(searchStr, str, caseSensitive) {
   }
   return indices;
 }
-
-
-
-
-
-
