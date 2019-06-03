@@ -108,6 +108,7 @@ div.icons
     background: #3dd5e0;
     align-items: center;
     border-radius: 5px 0 0 5px;
+    cursor: pointer;
 }
 
 div.icon:hover {
