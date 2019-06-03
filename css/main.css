@@ -56,8 +56,7 @@ div#main-outer {
     border-radius: 5px;
     position: fixed;
     right: 4px;
-    border: 1px solid #bfbfbf;
-  
+    box-shadow: 2px 2px 2px #aaaaaa;
 }
 div.icon {
     width: 25px;
@@ -65,8 +64,6 @@ div.icon {
     justify-content: center;
     align-items: center;
     display: flex;
-    
-  
 }
 
 div.results-amount
@@ -110,6 +107,7 @@ div.icons
     height: 40px;
     background: #3dd5e0;
     align-items: center;
+    border-radius: 5px 0 0 5px;
 }
 
 div.icon:hover {
