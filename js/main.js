@@ -7,10 +7,6 @@ var isError = false;
 
 
 //EVENTS
-$("#close").click(function () {
-  window.close();
-});
-
 $(document).on('scroll', pagination);
 
 document.addEventListener('DOMContentLoaded', init_main);
@@ -24,6 +20,7 @@ function init_main() {
   document.getElementById("nextResultBtn").addEventListener("click", nextResult);
   document.getElementById("input-text").addEventListener("input", onChangeInputText);
   document.getElementById("reTryLoadBtn").addEventListener("click", reTryLoad);
+  document.getElementById("clear").addEventListener("click", clearInputText);
   $('html').hide().fadeIn('slow');
 
   loadCurrentPdf();
@@ -417,6 +414,11 @@ function getIndicesOf(searchStr, str, caseSensitive) {
 
 function reTryLoad() {
   window.location.reload()
+}
+
+function clearInputText() {
+  document.getElementById("input-text").value = "";
+  onChangeInputText();
 }
 
 
