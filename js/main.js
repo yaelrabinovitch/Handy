@@ -328,8 +328,8 @@ function nextResult() {
 }
 
 function scrollToCurrentResults(currResultIndex) {
-  if (results.length && results[0][0][currResultIndex]) {
-    var currResultEditCanvas = document.getElementById("edit_" + results[0][0][currResultIndex].pageNum);
+  if (results.length && results[currResultIndex][0][0]) {
+    var currResultEditCanvas = document.getElementById("edit_" + results[currResultIndex][0][0].pageNum);
     currResultEditCanvas.scrollIntoView();
   }
 }
