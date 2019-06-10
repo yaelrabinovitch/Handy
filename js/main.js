@@ -115,9 +115,9 @@ function renderPDF(url) {
       editCanvas.style.position = "absolute"
 
       container.appendChild(editCanvas)
-      // append hr to body
-      var hr = document.createElement('hr');
-      document.getElementById("pdf-container").appendChild(hr);
+      // append break to body
+      var br = document.createElement('br');
+      document.getElementById("pdf-container").appendChild(br);
       // render current page
       pdf.getPage(pageNum).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
