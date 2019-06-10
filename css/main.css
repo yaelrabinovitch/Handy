@@ -116,6 +116,10 @@ div.icon:hover {
     color: lightslategrey;
 }
 
+div#blank-space{
+    height: 50px;
+}
+
 div#main-inner {
     display: flex;
     flex-direction: row;
