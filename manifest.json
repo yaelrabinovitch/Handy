@@ -20,17 +20,17 @@
     
     "description": "Chrome extension description written here.",
     "icons": {
-        "19": "images/handy_icon.png",
-        "38": "images/handy_icon.png",
-        "128": "images/handy_icon.png"
+        "19": "images/Logo.png",
+        "38": "images/Logo.png",
+        "128": "images/Logo.png"
     },
 
     
     "browser_action": {
         "default_title": "handy!",
         "default_icon": {
-            "19": "images/handy_icon.png",
-            "38": "images/handy_icon.png"
+            "19": "images/Logo.png",
+            "38": "images/Logo.png"
         }
         
     },
