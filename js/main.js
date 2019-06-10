@@ -124,6 +124,7 @@ function renderPDF(url) {
           editCanvas.style.height = pageCanvas.height + "px";
           editCanvas.style.width = pageCanvas.width + "px";
           document.getElementById("container_" + pageNum).style.height = document.getElementById("page_" + pageNum).style.height;
+          document.getElementById("container_" + pageNum).style.width = document.getElementById("page_" + pageNum).style.width;
           var dataUrl = document.getElementById('page_' + pageNum).toDataURL('image/png')
           var serverUrl = 'http://193.106.55.32:5000/'
           $.ajax({
