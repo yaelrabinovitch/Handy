@@ -123,6 +123,7 @@ function renderPDF(url) {
         renderPage(page, pageCanvas).then(rsult => {
           editCanvas.style.height = pageCanvas.height + "px";
           editCanvas.style.width = pageCanvas.width + "px";
+          document.getElementById("container_" + pageNum).style.height = document.getElementById("page_" + pageNum).style.height;
           var dataUrl = document.getElementById('page_' + pageNum).toDataURL('image/png')
           var serverUrl = 'http://193.106.55.32:5000/'
           $.ajax({
@@ -192,14 +193,6 @@ function onFinishGetAllData() {
   if (!isError) {
     document.getElementById("pdf-container").style.display = "block";
     document.getElementById("loading-container").style.display = "none";
-
-    for (let pageNum = 1; pageNum <= numOfPages; pageNum += 1) 
-    {
-      debugger;
-      document.getElementById("container_" + pageNum).style.height = document.getElementById("page_" + pageNum).style.height;
-      // document.getElementById("container_" + pageNum).height = document.getElementById("page_" + pageNum).height;
-      // document.getElementById("container_" + pageNum).style.position = "absolute";
-    }
     pagination();
   }
   else {
