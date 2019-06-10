@@ -121,8 +121,8 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(pageNum).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
-          editCanvas.height = pageCanvas.height;
-          editCanvas.width = pageCanvas.width;
+          editCanvas.style.height = pageCanvas.height + "px";
+          editCanvas.style.width = pageCanvas.width + "px";
           var dataUrl = document.getElementById('page_' + pageNum).toDataURL('image/png')
           var serverUrl = 'http://193.106.55.32:5000/'
           $.ajax({
@@ -192,6 +192,14 @@ function onFinishGetAllData() {
   if (!isError) {
     document.getElementById("pdf-container").style.display = "block";
     document.getElementById("loading-container").style.display = "none";
+
+    for (let pageNum = 1; pageNum <= numOfPages; pageNum += 1) 
+    {
+      debugger;
+      document.getElementById("container_" + pageNum).style.height = document.getElementById("page_" + pageNum).style.height;
+      // document.getElementById("container_" + pageNum).height = document.getElementById("page_" + pageNum).height;
+      // document.getElementById("container_" + pageNum).style.position = "absolute";
+    }
     pagination();
   }
   else {
@@ -215,6 +223,8 @@ function renderPage(page, canvas) {
   };
   canvas.height = viewport.height;
   canvas.width = viewport.width;
+  canvas.style.height = viewport.height + "px";
+  canvas.style.width = viewport.width + "px";
   return page.render(renderContext)
 }
 
