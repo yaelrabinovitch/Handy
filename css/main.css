@@ -16,7 +16,7 @@ canvas
 
 .container
 {
-
+    height:950px;
 
 }
 
@@ -114,6 +114,10 @@ div.icons
 div.icon:hover {
     background: transparent;
     color: lightslategrey;
+}
+
+div#blank-space{
+    height: 50px;
 }
 
 div#blank-space{

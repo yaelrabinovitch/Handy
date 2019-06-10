@@ -121,9 +121,11 @@ function renderPDF(url) {
       // render current page
       pdf.getPage(pageNum).then((page) => {
         renderPage(page, pageCanvas).then(rsult => {
+          editCanvas.height = pageCanvas.height;
+          editCanvas.width = pageCanvas.width;
           editCanvas.style.height = pageCanvas.height + "px";
           editCanvas.style.width = pageCanvas.width + "px";
-          document.getElementById("container_" + pageNum).style.height = document.getElementById("page_" + pageNum).style.height;
+          document.getElementById("container_"+ pageNum).style.height =  editCanvas.height + "px";
           var dataUrl = document.getElementById('page_' + pageNum).toDataURL('image/png')
           var serverUrl = 'http://193.106.55.32:5000/'
           $.ajax({
@@ -402,7 +404,6 @@ function clearInputText() {
   document.getElementById("input-text").value = "";
   onChangeInputText();
 }
-
 
 
 
